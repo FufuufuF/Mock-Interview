@@ -11,13 +11,15 @@ Mock-Interview/
 ├── CLAUDE.md                  # 本文件
 ├── .claude/skills/            # Claude Code Skills
 │   ├── interview/             # /interview — 启动模拟面试
+│   ├── comment/               # /comment — 面试中标记知识盲区
 │   ├── review/                # /review — 面试复盘分析
 │   └── progress/              # /progress — 进度统计
 ├── questions/                 # 题库（按岗位/方向组织）
 │   └── frontend/              # 前端方向题库
 ├── records/                   # 面试记录
 │   ├── markdown/              # Markdown 格式（方便阅读）
-│   └── json/                  # JSON 格式（方便统计分析）
+│   ├── json/                  # JSON 格式（方便统计分析）
+│   └── comments/              # 面试中标记的知识盲区记录
 └── templates/                 # 记录模板
 ```
 
