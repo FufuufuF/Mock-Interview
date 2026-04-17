@@ -1,0 +1,147 @@
+{
+  "date": "2026-04-16",
+  "position": "frontend",
+  "total_questions": 13,
+  "overall_score": "B",
+  "module_scores": {
+    "js-basics": { "count": 5, "avg_score": "A" },
+    "css-layout": { "count": 1, "avg_score": "D" },
+    "network": { "count": 3, "avg_score": "B" },
+    "browser": { "count": 1, "avg_score": "C" },
+    "react": { "count": 3, "avg_score": "A" },
+    "vue": { "count": 0, "avg_score": "-" },
+    "scenario": { "count": 0, "avg_score": "-" },
+    "performance": { "count": 0, "avg_score": "-" }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "module": "js-basics",
+      "question": "var、let、const 三者的区别",
+      "score": "A",
+      "answer_summary": "从作用域、可修改性、全局变量挂载 window、变量提升与暂时性死区四个维度详细说明",
+      "feedback": "回答准确且有深度，覆盖核心知识点，对 TDZ 的理解超出基础水平",
+      "follow_ups": ["const 声明的对象属性能否修改？如何实现不可变对象？", "Object.freeze 是深冻结还是浅冻结？"],
+      "tags": ["变量声明", "块级作用域", "变量提升", "暂时性死区"]
+    },
+    {
+      "id": 2,
+      "module": "js-basics",
+      "question": "闭包的概念和应用场景",
+      "score": "B",
+      "answer_summary": "描述了函数返回函数且引用外部变量时变量不被销毁的行为，提到回调函数和模块机制",
+      "feedback": "核心概念正确但定义偏窄，应用场景需补充防抖节流、柯里化、私有变量封装等",
+      "follow_ups": ["闭包会不会导致内存泄漏？什么场景下需要注意？"],
+      "tags": ["闭包", "词法环境", "内存泄漏"]
+    },
+    {
+      "id": 3,
+      "module": "js-basics",
+      "question": "事件循环机制（宏任务与微任务）",
+      "score": "A",
+      "answer_summary": "准确描述宏任务→微任务→渲染的循环流程，微任务队列完全清空才进入下一环节，代码输出题正确",
+      "feedback": "回答准确全面，对执行顺序理解清晰",
+      "follow_ups": ["代码输出顺序：setTimeout/Promise.then/console.log", "Promise.then 中再创建微任务的执行时机"],
+      "tags": ["事件循环", "宏任务", "微任务"]
+    },
+    {
+      "id": 4,
+      "module": "browser",
+      "question": "重排与重绘",
+      "score": "C",
+      "answer_summary": "修改几何尺寸触发重排，修改颜色等触发重绘，重排消耗大于重绘。不了解读取 offsetWidth 触发重排",
+      "feedback": "基础概念正确但不够深入，需补充强制同步布局概念",
+      "follow_ups": ["为什么读取 offsetWidth/clientHeight 会触发重排？"],
+      "tags": ["重排", "重绘", "强制同步布局"]
+    },
+    {
+      "id": 5,
+      "module": "css-layout",
+      "question": "BFC 的概念和作用",
+      "score": "D",
+      "answer_summary": "表示 CSS 基本不了解，跳过",
+      "feedback": "BFC 是高频考点，需系统学习触发条件和解决的问题",
+      "follow_ups": [],
+      "tags": ["BFC", "CSS 基础"]
+    },
+    {
+      "id": 6,
+      "module": "network",
+      "question": "强缓存与协商缓存",
+      "score": "B",
+      "answer_summary": "描述了 Expires 到 Cache-Control 的演进，协商缓存两对请求/响应头和 304 状态码",
+      "feedback": "整体框架正确，部分术语不准确，不了解 no-cache 和 no-store 区别",
+      "follow_ups": ["Cache-Control 中 no-cache 和 no-store 的区别？"],
+      "tags": ["HTTP 缓存", "强缓存", "协商缓存", "Cache-Control"]
+    },
+    {
+      "id": 7,
+      "module": "network",
+      "question": "跨域与同源策略",
+      "score": "B",
+      "answer_summary": "正确定义同源，说明跨域拦截和同源策略限制范围",
+      "feedback": "核心概念正确，CORS 简单请求触发条件不够精确",
+      "follow_ups": ["CORS 简单请求和预检请求的触发条件？"],
+      "tags": ["同源策略", "跨域", "CORS"]
+    },
+    {
+      "id": 8,
+      "module": "network",
+      "question": "HTTPS TLS 握手过程",
+      "score": "A",
+      "answer_summary": "完整描述 TLS 握手全流程：客户端Hello → 服务端Hello+证书 → 预主密钥加密 → 对称密钥生成",
+      "feedback": "TLS 握手流程理解清晰准确，混合加密核心逻辑掌握良好",
+      "follow_ups": [],
+      "tags": ["HTTPS", "TLS", "非对称加密", "对称加密"]
+    },
+    {
+      "id": 9,
+      "module": "react",
+      "question": "useState 工作原理与 Hooks 调用规则",
+      "score": "A",
+      "answer_summary": "useState 创建 hook 节点，setState 推入状态队列渲染时统一更新，Hooks 通过链表组织",
+      "feedback": "回答准确，对底层链表结构理解到位",
+      "follow_ups": ["setState 是同步还是异步？React 18 之后有什么变化？"],
+      "tags": ["useState", "Hooks", "链表"]
+    },
+    {
+      "id": 10,
+      "module": "react",
+      "question": "setState 同步异步与 React 18 变化",
+      "score": "A",
+      "answer_summary": "React 18 之前通过事务 flag 机制批量更新，setTimeout 中变为同步；React 18 后全部自动批处理",
+      "feedback": "对批量更新机制演进理解深入，能说清底层原理",
+      "follow_ups": [],
+      "tags": ["setState", "批量更新", "React 18"]
+    },
+    {
+      "id": 11,
+      "module": "react",
+      "question": "useMemo、useCallback 与 React.memo",
+      "score": "A",
+      "answer_summary": "useCallback 稳定函数引用，useMemo 稳定计算值引用，React.memo 跳过不必要的重渲染，不应滥用",
+      "feedback": "理解全面准确，能从性能权衡角度思考",
+      "follow_ups": ["是否应该给每个函数都包裹 useCallback？"],
+      "tags": ["useMemo", "useCallback", "React.memo", "性能优化"]
+    }
+  ],
+  "overall_feedback": "候选人在 JS 基础和 React 框架方面表现突出，对底层原理有深入理解。网络方面整体框架清晰但细节精确度有待提高。CSS 模块存在明显短板，浏览器渲染机制理解偏浅。因时间原因未考察场景题/手写题和性能优化模块。",
+  "strengths": [
+    "JS 基础扎实，对变量机制、事件循环、异步原理有深入理解",
+    "React 掌握程度高，能从底层机制角度解释 Hooks、批量更新等核心概念",
+    "网络方面对缓存策略和 TLS 握手有较好掌握",
+    "遇到不确定的问题能通过已有知识进行合理推导"
+  ],
+  "weak_points": [
+    "CSS 模块完全空白，BFC、Flex/Grid 等核心内容需补齐",
+    "浏览器渲染机制理解偏浅，强制同步布局等关键概念不清楚",
+    "网络部分术语和细节不够精确",
+    "闭包的定义和应用场景覆盖面不足"
+  ],
+  "suggestions": [
+    "CSS 是当务之急：BFC、Flex/Grid 布局、盒模型、层叠上下文、响应式设计",
+    "浏览器渲染流水线：Layout → Paint → Composite、强制同步布局、合成层、GPU 加速",
+    "网络细节：CORS 精确触发条件、Cache-Control 各指令、HTTP 头部字段准确名称",
+    "场景题和手写题：防抖节流、深拷贝、Promise 手写等高频题目"
+  ]
+}
