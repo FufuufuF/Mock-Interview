@@ -1,0 +1,158 @@
+{
+  "date": "2026-04-23",
+  "position": "frontend",
+  "total_questions": 12,
+  "overall_score": "C",
+  "module_scores": {
+    "js-basics": { "count": 3, "avg_score": "B" },
+    "css-layout": { "count": 0, "avg_score": "-" },
+    "network": { "count": 2, "avg_score": "C" },
+    "browser": { "count": 2, "avg_score": "C" },
+    "react": { "count": 1, "avg_score": "A" },
+    "vue": { "count": 1, "avg_score": "D" },
+    "scenario": { "count": 2, "avg_score": "B" },
+    "performance": { "count": 1, "avg_score": "D" }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "module": "js-basics",
+      "question": "请解释 JavaScript 的原型链机制，以及继承是如何实现的？",
+      "score": "A",
+      "answer_summary": "从 new 操作符的执行过程切入，准确描述了 __proto__ 指向构造函数 prototype 的机制，原型链查找过程，以及 prototype 上挂载引用类型值导致实例间互相影响的问题。追问 ES6 class 时准确说明其为语法糖。",
+      "feedback": "回答准确、完整，理解深入，能从底层机制到实践模式做清晰阐述。",
+      "follow_ups": ["ES6 的 class 语法本质上是什么？它和构造函数这套机制是什么关系？"],
+      "tags": ["原型链", "prototype", "__proto__", "继承", "ES6 class"]
+    },
+    {
+      "id": 2,
+      "module": "js-basics",
+      "question": "请详细解释闭包的概念、形成条件以及常见应用场景",
+      "score": "B",
+      "answer_summary": "提到词法作用域链捕获外部变量，被引用的变量提升到堆内存不会被垃圾回收。应用场景提到了回调函数和模块机制。追问内存泄漏时提到了 DOM 引用、定时器/监听器、大变量闭包等场景。",
+      "feedback": "相比上次有进步，定义更准确了。但应用场景仍不够全面，缺少防抖节流、柯里化、私有变量封装等经典场景。",
+      "follow_ups": ["闭包会导致内存泄漏吗？在什么场景下需要特别注意？"],
+      "tags": ["闭包", "词法作用域", "内存泄漏", "垃圾回收"]
+    },
+    {
+      "id": 3,
+      "module": "js-basics",
+      "question": "请解释 ES6 中的 Proxy 和 Reflect，以及它们的应用场景",
+      "score": "D",
+      "answer_summary": "无法回答，跳过。",
+      "feedback": "Proxy 是 Vue 3 响应式的基础，也是元编程的核心 API。需要掌握基本用法、常见 trap、与 Object.defineProperty 的对比。",
+      "follow_ups": [],
+      "tags": ["Proxy", "Reflect", "元编程"]
+    },
+    {
+      "id": 4,
+      "module": "vue",
+      "question": "请说明 Vue 2 和 Vue 3 的主要差异有哪些？",
+      "score": "D",
+      "answer_summary": "表示基本只使用 React，不熟悉 Vue。",
+      "feedback": "面试中 Vue 和 React 经常对比考察。即使主用 React，也建议了解 Vue 的核心概念。",
+      "follow_ups": [],
+      "tags": ["Vue 2", "Vue 3", "框架对比"]
+    },
+    {
+      "id": 5,
+      "module": "react",
+      "question": "请深入解释 React Fiber 架构的设计动机和工作原理",
+      "score": "A",
+      "answer_summary": "从 JS 线程与渲染线程互斥的根因出发，详细说明了 Fiber 节点的链表结构（return/child/sibling 三个指针）、双缓冲机制、5ms 时间切片、优先级中断机制，并指出普通 setState 不开启分片渲染，需要 useTransition 等 API。",
+      "feedback": "回答非常出色，覆盖了 Fiber 的核心设计要点，对底层机制理解深入。",
+      "follow_ups": ["Commit Phase 为什么不能中断？"],
+      "tags": ["Fiber", "链表", "双缓冲", "时间切片", "优先级调度"]
+    },
+    {
+      "id": 6,
+      "module": "network",
+      "question": "请描述 TCP 三次握手的过程，并解释为什么需要三次而不是两次？",
+      "score": "B",
+      "answer_summary": "正确描述了 SYN → SYN-ACK → ACK 的流程，提到第三次握手可以携带数据。追问 TIME_WAIT 时提到了防止丢包和防止旧连接数据干扰新连接。",
+      "feedback": "流程描述正确。'为什么三次'的解释偏表面，核心原因是双方确认收发能力及防止历史失效连接请求。TIME_WAIT 部分细节有误。",
+      "follow_ups": ["TCP 四次挥手中为什么需要 TIME_WAIT 状态？TIME_WAIT 过多会有什么问题？"],
+      "tags": ["TCP", "三次握手", "TIME_WAIT"]
+    },
+    {
+      "id": 7,
+      "module": "network",
+      "question": "XSS 攻击有哪些类型？在前端和后端分别如何防御？",
+      "score": "C",
+      "answer_summary": "描述了三种攻击方式但未使用标准术语（存储型/反射型/DOM 型）。防御方面提到了配置可执行脚本源、HTML 转义、后端输入校验，但追问时无法说出 CSP 全称。",
+      "feedback": "对 XSS 有基本理解但不够系统。需要掌握三种类型的标准定义和区别，CSP 是必须掌握的防御手段。",
+      "follow_ups": ["配置可执行的 script 源具体通过什么机制实现？"],
+      "tags": ["XSS", "存储型XSS", "反射型XSS", "DOM型XSS", "CSP"]
+    },
+    {
+      "id": 8,
+      "module": "performance",
+      "question": "请介绍前端核心性能指标 Core Web Vitals",
+      "score": "D",
+      "answer_summary": "无法回答。",
+      "feedback": "Core Web Vitals（LCP、FID/INP、CLS）是前端性能优化的基础知识，需要了解每个指标的含义、测量方式和优化手段。",
+      "follow_ups": [],
+      "tags": ["Core Web Vitals", "LCP", "FID", "CLS", "性能指标"]
+    },
+    {
+      "id": 9,
+      "module": "browser",
+      "question": "DOM 树和 CSSOM 树是如何构建的？",
+      "score": "D",
+      "answer_summary": "无法回答，跳过。",
+      "feedback": "需要掌握 HTML 解析构建 DOM 树、CSS 解析构建 CSSOM 树、合并生成渲染树的过程，以及 script 标签对解析的阻塞行为。",
+      "follow_ups": [],
+      "tags": ["DOM树", "CSSOM树", "渲染树", "HTML解析"]
+    },
+    {
+      "id": 10,
+      "module": "browser",
+      "question": "请说明浏览器的多进程架构，每个进程分别负责什么？",
+      "score": "B",
+      "answer_summary": "列出了渲染进程、网络进程、GPU 进程、主进程及各自职责。追问时回答了进程隔离防止单标签页崩溃影响整体。",
+      "feedback": "基本框架正确。可以补充渲染进程内部的线程分工及多标签页共享渲染进程的条件。",
+      "follow_ups": ["为什么 Chrome 要采用多进程而不是多线程架构？"],
+      "tags": ["多进程架构", "渲染进程", "进程隔离"]
+    },
+    {
+      "id": 11,
+      "module": "scenario",
+      "question": "手写防抖和节流函数",
+      "score": "B",
+      "answer_summary": "防抖实现正确。节流实现思路正确但传参有 bug，指出后能立即修正。场景举例恰当。追问 React 中使用防抖时，提到了闭包陷阱和 useRef，但未抓住核心问题（每次渲染创建新实例）。",
+      "feedback": "手写能力不错，但需要注意细节。React 中使用防抖的核心问题是组件每次渲染重新执行函数体。",
+      "follow_ups": ["在 React 中使用防抖需要注意什么？为什么不能直接在组件里写 debounce？"],
+      "tags": ["防抖", "节流", "手写代码", "React Hooks"]
+    },
+    {
+      "id": 12,
+      "module": "scenario",
+      "question": "手写深拷贝",
+      "score": "B",
+      "answer_summary": "实现了递归深拷贝，处理了基本类型、Date/RegExp 特殊对象、循环引用（使用 Map）。但 Date 和 RegExp 的创建缺少 new 关键字。追问 WeakMap 时理解正确。",
+      "feedback": "整体结构好，考虑了循环引用。注意 new Date() vs Date() 的区别，也可以考虑对 Map、Set 等更多类型的支持。",
+      "follow_ups": ["Date(obj) 和 RegExp(obj) 少了什么？", "WeakMap 相比 Map 有什么好处？"],
+      "tags": ["深拷贝", "循环引用", "WeakMap", "手写代码"]
+    }
+  ],
+  "overall_feedback": "候选人在 React 框架和 JS 原型链方面表现突出，对 Fiber 架构的理解尤为深入。手写代码能力不错，思路清晰且能考虑边界情况。但浏览器渲染机制（DOM/CSSOM 构建）、性能优化指标体系存在明显空白，Proxy/Reflect 等 JS 进阶内容和 Vue 框架知识欠缺。整体知识面有明显短板，需要补齐。",
+  "strengths": [
+    "React 底层原理理解深入，Fiber 架构的链表结构、双缓冲、时间切片、优先级调度都能清晰阐述",
+    "JS 原型链机制掌握扎实，能从 new 操作符到继承模式做完整分析",
+    "手写代码思路清晰，能考虑循环引用等边界情况"
+  ],
+  "weak_points": [
+    "浏览器渲染机制（DOM/CSSOM 树构建）完全空白",
+    "性能优化指标体系（Core Web Vitals）不了解",
+    "Proxy/Reflect 元编程无法作答",
+    "Vue 框架知识欠缺",
+    "XSS 防御体系不够系统，术语不精确"
+  ],
+  "suggestions": [
+    "浏览器渲染流水线：HTML 解析 → DOM 树、CSS 解析 → CSSOM 树、渲染树构建、Layout → Paint → Composite",
+    "性能优化指标：Core Web Vitals（LCP、FID/INP、CLS）的含义、测量和优化",
+    "Proxy 与 Reflect：基本用法、trap 类型、与 Object.defineProperty 的对比",
+    "前端安全：系统梳理 XSS 三种类型（存储型/反射型/DOM 型）、CSP、CSRF 防御",
+    "Vue 核心概念：响应式原理、Composition API，面试中常与 React 做对比"
+  ]
+}
