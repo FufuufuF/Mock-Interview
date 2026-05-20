@@ -1,0 +1,46 @@
+{
+  "date": "2026-05-19",
+  "topic": "作用域与闭包",
+  "topicSlug": "scope-and-closure",
+  "category": "js-basics",
+  "knowledgePoints": [
+    {
+      "dimension": "词法作用域与作用域链",
+      "point": "作用域链在定义时确定，通过 [[OuterEnv]] 逐层向外查找变量",
+      "interviewQuestion": "请解释 JavaScript 中的作用域链是如何工作的",
+      "mastery": "A",
+      "masteryNote": "能准确描述作用域链机制，主动关联 V8 Context 实现"
+    },
+    {
+      "dimension": "执行上下文与变量环境",
+      "point": "var/let/const 都提升，区别在于初始化时机（var 初始化为 undefined，let/const 不初始化触发 TDZ）",
+      "interviewQuestion": "var 的变量提升机制是什么？为什么 let/const 表现不同？",
+      "mastery": "A",
+      "masteryNote": "能正确说出输出结果并解释 TDZ 机制，了解 V8 TheHole 实现"
+    },
+    {
+      "dimension": "闭包的本质",
+      "point": "闭包 = 函数 + 它定义时的词法环境引用，形成条件是嵌套 + 引用外部变量 + 生命周期延长",
+      "interviewQuestion": "请解释什么是闭包？它是怎么形成的？",
+      "mastery": "B",
+      "masteryNote": "核心理解正确，但最初对闭包形成场景理解偏窄（只想到 return），经讲解后理解"
+    },
+    {
+      "dimension": "闭包的应用与陷阱",
+      "point": "经典 for+var+setTimeout 题、数据私有化、函数工厂、缓存/记忆化",
+      "interviewQuestion": "闭包有哪些应用场景？for 循环 + setTimeout 输出什么？",
+      "mastery": "B",
+      "masteryNote": "应用场景和修复方式掌握良好，for 循环输出值首次回答为 2（应为 3），对终止条件需注意"
+    },
+    {
+      "dimension": "闭包与内存",
+      "point": "闭包本身不是内存泄漏，泄漏发生在无意延长变量生命周期（遗忘的监听器/定时器）",
+      "interviewQuestion": "闭包会导致内存泄漏吗？",
+      "mastery": "A",
+      "masteryNote": "准确判断 V8 优化行为（未引用变量不进 Context），理解清晰"
+    }
+  ],
+  "summary": "作用域链决定变量查找路径（定义时确定），闭包是函数+其捕获的词法环境引用，使外部变量生命周期被延长",
+  "followUp": ["this 指向与绑定规则", "垃圾回收机制（V8 新生代/老生代）", "手写防抖节流"],
+  "relatedInterviewQuestions": ["Q4", "Q8", "Q18"]
+}
