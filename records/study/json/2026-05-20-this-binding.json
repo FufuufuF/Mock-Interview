@@ -1,0 +1,46 @@
+{
+  "date": "2026-05-20",
+  "topic": "this 指向",
+  "topicSlug": "this-binding",
+  "category": "js-basics",
+  "knowledgePoints": [
+    {
+      "dimension": "四大绑定规则与优先级",
+      "point": "new > 显式 > 隐式 > 默认，箭头函数独立于四大规则",
+      "interviewQuestion": "请详细解释 this 的指向规则，并按优先级排列",
+      "mastery": "B",
+      "masteryNote": "四种规则能说出，但初始回答中优先级顺序有误（把 bind 放在了 new 前面），经纠正后理解"
+    },
+    {
+      "dimension": "箭头函数的 this",
+      "point": "没有自己的 this，继承外层第一个普通函数的 this，不可修改",
+      "interviewQuestion": "箭头函数和普通函数的 this 有什么区别？",
+      "mastery": "A",
+      "masteryNote": "主动说出'箭头函数没有 this，通过词法作用域向外找'，并能追问 class 属性 vs 对象字面量的区别"
+    },
+    {
+      "dimension": "隐式绑定丢失",
+      "point": "函数引用脱离对象后独立调用，this 退回默认绑定",
+      "interviewQuestion": "什么是隐式绑定丢失？在什么场景下会发生？",
+      "mastery": "A",
+      "masteryNote": "能正确判断赋值后调用的 this 指向，理解本质"
+    },
+    {
+      "dimension": "call/apply/bind 区别与手写",
+      "point": "call 逐参立即执行，apply 数组立即执行，bind 返回新函数；手写核心是临时挂载 + Symbol",
+      "interviewQuestion": "call、apply、bind 三者有什么区别？请手写实现一个",
+      "mastery": "C",
+      "masteryNote": "区别只说出参数差异，漏了立即执行 vs 返回新函数的关键区别；手写无思路，经引导后能写出但有笔误"
+    },
+    {
+      "dimension": "new 操作符的过程",
+      "point": "创建对象→连原型→绑 this 执行→判断返回值",
+      "interviewQuestion": "new 操作符具体做了什么？",
+      "mastery": "B",
+      "masteryNote": "主流程说出大部分，但漏掉了原型链连接步骤（Object.create(Fn.prototype)）"
+    }
+  ],
+  "summary": "this 由调用方式决定，四种规则优先级 new > 显式 > 隐式 > 默认；箭头函数无自己的 this，继承外层词法作用域",
+  "followUp": ["原型与继承", "手写完整 bind（支持 new）", "React 中 this 丢失的解决方案"],
+  "relatedInterviewQuestions": ["Q6", "Q10"]
+}
