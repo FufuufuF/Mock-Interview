@@ -1,0 +1,46 @@
+{
+  "date": "2026-05-21",
+  "topic": "原型与继承",
+  "topicSlug": "prototype-and-inheritance",
+  "category": "js-basics",
+  "knowledgePoints": [
+    {
+      "dimension": "prototype 与 __proto__ 的关系",
+      "point": "函数有 prototype，实例有 __proto__，实例.__proto__ === 构造函数.prototype",
+      "interviewQuestion": "请解释 prototype、__proto__ 和 constructor 三者的关系",
+      "mastery": "A",
+      "masteryNote": "能准确描述三角关系，理解清晰"
+    },
+    {
+      "dimension": "原型链查找机制",
+      "point": "沿 __proto__ 逐层向上查找属性，终点是 null",
+      "interviewQuestion": "原型链是怎么工作的？查找的终点是什么？",
+      "mastery": "B",
+      "masteryNote": "知道查找机制，但对链的完整层级（到 Object.prototype）不够清晰，不确定 toString 从哪来"
+    },
+    {
+      "dimension": "继承方式演进",
+      "point": "四种继承方式演进到寄生组合式最优解：call + Object.create",
+      "interviewQuestion": "JavaScript 有哪些继承方式？请手写寄生组合式继承",
+      "mastery": "B",
+      "masteryNote": "第一次讲解后需要重新梳理，第二次理解了演进逻辑和每种方式的缺陷"
+    },
+    {
+      "dimension": "ES6 class 的本质",
+      "point": "语法糖，底层是寄生组合式继承，有额外约束",
+      "interviewQuestion": "ES6 class 本质上是什么？和构造函数有什么关系？",
+      "mastery": "A",
+      "masteryNote": "直接说出语法糖本质，并主动追问 super 与 this 创建机制"
+    },
+    {
+      "dimension": "Object.create 与原型操作",
+      "point": "Object.create(null) 创建无原型纯净字典，Object.create(proto) 只建立原型链接不执行构造函数",
+      "interviewQuestion": "Object.create(null) 和 {} 有什么区别？",
+      "mastery": "A",
+      "masteryNote": "准确说出 __proto__ 为 null 的区别"
+    }
+  ],
+  "summary": "原型链通过 __proto__ 逐层向上查找属性（终点 null），继承最优解是寄生组合式（call + Object.create），ES6 class 是其语法糖",
+  "followUp": ["instanceof 原理与手写", "Mixin 多继承模式", "ES6 class 的静态属性与私有字段"],
+  "relatedInterviewQuestions": ["Q9"]
+}
