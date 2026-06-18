@@ -1,0 +1,56 @@
+{
+  "date": "2026-06-18",
+  "topic": "JavaScript 异步（协程 + 事件循环）",
+  "slug": "js-async",
+  "dimensions": [
+    {
+      "id": 4,
+      "title": "Generator + 协程 + async/await 本质",
+      "status": "completed",
+      "keyPoints": [
+        "协程 = 可暂停+恢复的函数，局部变量和执行位置被保存",
+        "底层实现：编译器以yield为界拆成状态机，局部变量从栈提升到堆",
+        "Stackless协程（JS/Python）vs Stackful协程（Go）",
+        "Generator = JS的半协程实现，function*/yield/.next()",
+        "yield是双向通道：向外输出值，向内接收.next(arg)",
+        "自动执行器：唤醒→拿Promise→等完成→喂结果回去→循环",
+        "async/await = Generator + 引擎内置自动执行器",
+        "await时协程让出，.then注册唤醒，微任务时恢复"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "事件循环精确模型",
+      "status": "completed",
+      "keyPoints": [
+        "精确模型：1个宏任务→清空所有微任务→可能渲染→循环",
+        "微任务是清空式的，执行中产生的新微任务也在本轮清空",
+        "宏任务：setTimeout/setInterval/用户交互/MessageChannel/IO/<script>",
+        "微任务：Promise.then/catch/finally/queueMicrotask/MutationObserver/await后代码",
+        "第一个宏任务 = <script>标签的同步代码",
+        "RAF不是宏也不是微，在渲染前执行",
+        "优先级：同步 > 微任务 > RAF > 宏任务"
+      ]
+    }
+  ],
+  "previousDimensions": [
+    {"id": 1, "title": "异步的根源（JS单线程）", "status": "skipped"},
+    {"id": 2, "title": "三代演进（回调→Promise→async/await）", "status": "skipped"},
+    {"id": 3, "title": "Promise链式调用机制 + 手写then", "status": "completed_prior_session"}
+  ],
+  "skippedDimensions": [
+    {"id": 6, "title": "代码输出题实战", "reason": "学生选择跳过"}
+  ],
+  "studentPerformance": {
+    "strengths": [
+      "主动要求从零讲解协程，学习态度好",
+      "对底层实现有追问精神（switch是真的还是杜撰的）",
+      "有Python asyncio背景，类比理解快",
+      "事件循环检验题答对（D→B→C→A）"
+    ],
+    "weaknesses": [],
+    "overallGrade": "A"
+  },
+  "relatedTopics": ["Promise手写", "协程", "Generator", "事件循环", "微任务", "宏任务"],
+  "nextSteps": ["CSS（BFC、Flex、盒模型）", "浏览器渲染流水线"]
+}
