@@ -1,0 +1,100 @@
+{
+  "date": "2026-08-13",
+  "topic": "身份认证（Cookie / Session / Token / JWT）",
+  "slug": "authentication",
+  "dimensions": [
+    {
+      "id": 1,
+      "title": "Cookie 属性与生命周期",
+      "status": "completed",
+      "keyPoints": [
+        "Cookie 在响应头 Set-Cookie 下发（不是响应体），请求时经请求头 Cookie 字段携带",
+        "浏览器按域名存储：会话期（无过期时间，关浏览器删）vs 持久（Expires/Max-Age）",
+        "HttpOnly：JS 读不到但照样自动携带，只能由服务器设置——防 XSS 窃取 Cookie（不防 XSS 本身）",
+        "Secure：仅 HTTPS 连接发送，防中间人截获",
+        "HttpOnly 的 Cookie 只能由服务器设置，JS 设置的 cookie 无法加 HttpOnly"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "SameSite 三值与第三方 Cookie",
+      "status": "completed",
+      "keyPoints": [
+        "Strict：跨站一律不带（含顶层导航）——最安全但点链接丢登录态",
+        "Lax（默认）：仅顶层导航 GET 带；表单/fetch/iframe 不带——安全与体验平衡",
+        "Lax 绕过：GET 改数据的接口可被 a 标签诱导点击触发 → 写操作必须 POST/PUT",
+        "None：跨站全带，必须配 Secure——广告跨站追踪、跨域 SSO 需要",
+        "第三方上下文：news.com 页面里 ad.com 的 iframe 访问 ad.com 的 Cookie 属跨站",
+        "同主域 SSO（Domain=.company.com）是 same-site 不需要 None",
+        "Chrome 淘汰第三方 Cookie；SSO 向 OAuth2/OIDC 迁移",
+        "三个维度：跨源（协议+域名+端口，CORS 管）/ 跨站（协议+可注册域名，SameSite 管）/ Cookie 携带（域名，端口不参与）"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Session 与 Token 模型",
+      "status": "completed",
+      "keyPoints": [
+        "Session：服务端有状态，sessionId 经 Cookie 下发，可主动失效（删 session）",
+        "分布式 Session 共享：粘性会话（机器挂了全丢）/ Redis 集中存储（主流）/ 无状态化 JWT",
+        "Token：服务端无状态，验签即可，分布式天然友好，CSRF 面小（Authorization 头表单带不了）",
+        "Token 最大缺点：无法主动失效（有效期内无法吊销）",
+        "Session CSRF 风险高（Cookie 自动携带），Token 风险低（头需要 JS 主动加）"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "JWT 结构、签名与双令牌",
+      "status": "completed",
+      "keyPoints": [
+        "三段结构：Header（算法）+ Payload（信息）+ Signature（签名），base64url 编码",
+        "base64url 是编码不是加密，payload 明文可解码——防篡改靠签名",
+        "签名 vs 加密：加密保密（可逆），签名防篡改/认证来源（不可逆）",
+        "信息泄漏防护四层：payload 最小化 / HTTPS / HttpOnly+Secure / 短期有效期",
+        "HS256 对称密钥（单体）；RS256 非对称（认证服务独立签发 + 业务服务公钥校验，被攻破也伪造不了）",
+        "JWT 四缺点：无法主动失效 / payload 明文 / 体积大 / 密钥泄漏全盘皆输",
+        "双令牌：access（15min~1h，存内存）+ refresh（7~30 天，存 HttpOnly Cookie，服务端可吊销）",
+        "刷新轮换：每次刷新发新 refresh 作废旧 refresh，防重放",
+        "本质：用少量有状态换安全与体验的平衡"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "API 鉴权（AI Agent 加分）",
+      "status": "completed",
+      "keyPoints": [
+        "API Key：长期静态字符串，Bearer 头，服务端到服务端（LLM 场景），泄漏靠吊销/轮换/额度上限",
+        "API Key 绝不能放前端（浏览器任何字符串都能被爬走），Agent 应用必须后端转发",
+        "OAuth2 授权码四角色：用户/客户端应用/授权服务器/资源服务器",
+        "五步流程：重定向授权页 → 用户授权 → 回跳带一次性 code → 服务端 code+client_secret 换 token → 调 API",
+        "code 中转原因：重定向经过浏览器直接给 token 会暴露；code 一次性短期；client_secret 只在服务端",
+        "state 参数防 CSRF（回调校验是否自己发起的授权）",
+        "LLM 场景三层鉴权：用户双 token / 后端 API Key（只放服务端）/ 第三方 API Key 或 OAuth2"
+      ]
+    }
+  ],
+  "previousDimensions": [],
+  "skippedDimensions": [],
+  "studentPerformance": {
+    "strengths": [
+      "主动追问 SameSite=None 的用途（广告/SSO 的第三方 Cookie 场景），理解后能复述",
+      "主动追问 JWT 防信息泄漏机制，最终建立「编码 vs 加密 vs 签名」的精确区分",
+      "提出 Cookie 下发位置的问题（响应体还是响应头），并接受了修正",
+      "对 Cookie 按域名 / localStorage 按源 / SameSite 按站的三维模型理解到位",
+      "SameSite 场景对比表掌握扎实（Strict/Lax/None × 表单/链接/iframe）"
+    ],
+    "weaknesses": [
+      "最初把 SameSite 说成『只允许跨站请求』（方向说反）",
+      "以为 Cookie 在响应体中下发（实际是响应头 Set-Cookie）",
+      "HttpOnly 表述不精确（『只有 HTTP 请求可以自动读取』）",
+      "误以为 JWT 内部有加密（实际 base64url 编码 + 签名防篡改）"
+    ],
+    "overallGrade": "A-"
+  },
+  "relatedTopics": ["XSS 与 CSRF（第九章）", "HTTPS 与 TLS（第六章）", "OAuth2", "微前端", "AI Agent API 调用"],
+  "nextSteps": [
+    "第六章：HTTPS 与 TLS（混合加密、握手流程、TLS 1.3、中间人攻击、HSTS）",
+    "第九章将把 HttpOnly / SameSite 与 XSS/CSRF 攻击原理完整串起来",
+    "复习重点：SameSite 三值场景表、JWT 编码vs加密vs签名、双令牌流程"
+  ]
+}

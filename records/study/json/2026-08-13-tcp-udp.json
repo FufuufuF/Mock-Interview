@@ -1,0 +1,106 @@
+{
+  "date": "2026-08-13",
+  "topic": "TCP / UDP",
+  "slug": "tcp-udp",
+  "dimensions": [
+    {
+      "id": 1,
+      "title": "TCP 可靠传输机制",
+      "status": "completed",
+      "keyPoints": [
+        "字节流模型：seq=本报文第一个字节位置，ack=期望下一个字节序号（已收字节数+1）",
+        "累积确认：ack=N 隐含 N 之前全部收到，一个 ACK 覆盖多个报文",
+        "乱序到达→接收方立即重复回期望序号 ACK（快速重传的信号）",
+        "超时重传：RTO 由 RTT 动态估算（SRTT+4×RTTVAR），重传后 RTO 指数退避，超 15 次放弃",
+        "快速重传：3 个重复 ACK 立即重传（1 个可能是乱序，3 个基本断定丢包）",
+        "SACK：选择性确认，只重传缺失区间（否则 Go-Back-N 式低效）",
+        "校验和坏包丢弃靠超时重传兜底；TCP 无法感知对端存活→需要应用层心跳",
+        "与 QUIC 对比：TCP 确认字节序号重传复用原序号（重传歧义），QUIC 确认包号重传用新号"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "流量控制与拥塞控制",
+      "status": "completed",
+      "keyPoints": [
+        "rwnd（接收方能收多少，接收方通告）vs cwnd（网络能扛多少，发送方维护）",
+        "发送窗口 = min(rwnd, cwnd)",
+        "窗口更新死锁：坚持定时器 + 窗口探测包（发 1 字节逼对方重新通告）",
+        "Nagle：同一时刻只允许一个未确认小报文，小数据合并发送",
+        "Nagle × 延迟确认互锁 → ~40ms 随机延迟，低延迟场景关 Nagle（TCP_NODELAY）",
+        "拥塞控制四阶段：慢启动（每 RTT 翻倍指数探测）→ 拥塞避免（每 RTT +1 线性）→ 快速恢复（3 重复 ACK 减半）→ 超时（cwnd=1 重新慢启动）",
+        "3 个重复 ACK 只减半：链路还通轻微拥塞；超时：ACK 都回不来严重拥塞必须归 1",
+        "演进：Tahoe → Reno → CUBIC（Linux 默认，按时间增长）→ BBR（按 BDP 建模不看丢包）"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "三次握手与 SYN Flood",
+      "status": "completed",
+      "keyPoints": [
+        "流程：SYN(seq=x) → SYN+ACK(seq=y, ack=x+1) → ACK(seq=x+1, ack=y+1)",
+        "第 3 步可捎带应用层数据（合法优化）",
+        "为什么三次：①确认全双工收发能力 ②同步双方 ISN（两次握手服务端的 y 未被确认）③客户端拦截历史失效连接",
+        "历史连接拦截：服务端无状态认不出旧 SYN，客户端校验 ack（期望=最新 SYN seq+1，对不上→RST）",
+        "第三次握手丢失：客户端数据包的 ACK 可隐式完成握手；否则服务端重传 SYN+ACK 指数退避后关闭",
+        "SYN Flood：伪造源 IP 海量 SYN 塞满半连接队列（资源不对称攻击）",
+        "SYN Cookie：不分配资源，cookie=hash(四元组+密钥)⊕时间戳⊕MSS 编码 塞进 SYN+ACK 的 seq，ACK 回来才校验分配",
+        "SYN Cookie 代价：无法协商 SACK/时间戳/窗口缩放（只能编码 MSS）；tcp_syncookies=1 队列溢出才启用",
+        "分层防御：BCP38 入站过滤 → 队列扩容/缩短重传 → SYN Cookie → SYN Proxy → 限速",
+        "半连接队列（SYN Queue）vs 全连接队列（Accept Queue，backlog 控制），溢出导致连接被丢"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "四次挥手与 TIME_WAIT",
+      "status": "completed",
+      "keyPoints": [
+        "流程：FIN(u) → ACK(u+1) → FIN(v)（数据发完后）→ ACK(v+1)",
+        "状态机：FIN_WAIT_1 → FIN_WAIT_2 → TIME_WAIT；CLOSE_WAIT → LAST_ACK",
+        "为什么四次：全双工独立关闭，被动方可能还有数据要发，ACK 和 FIN 被必然拆开",
+        "合并成三次：被动方没数据要发时 ACK+FIN 捎带同包（Piggyback/延迟确认）",
+        "TIME_WAIT 两个原因：①保证最后 ACK 可达（否则被动方卡 LAST_ACK）②2MSL 让旧报文消亡防同四元组新连接被污染",
+        "谁主动关闭谁进 TIME_WAIT（不是客户端专属）",
+        "服务端大量 CLOSE_WAIT = 应用层没 close() 的代码 bug（异常分支/响应慢/阻塞 IO），ss -tan 定位，不是内核参数问题",
+        "客户端大量 TIME_WAIT：短连接高并发，优化用连接池/SO_REUSEADDR/tcp_tw_reuse（配时间戳）",
+        "半关闭：shutdown(fd, SHUT_WR) 只关发送方向（即 FIN_WAIT_2 状态）"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "TCP vs UDP 对比",
+      "status": "completed",
+      "keyPoints": [
+        "TCP：面向连接、可靠有序、字节流、头部 20~60B、有流控拥控",
+        "UDP：无连接、不可靠、数据报有边界、头部 8B（源/目的端口+长度+校验和各 2B）",
+        "TCP 牺牲效率换可靠，UDP 牺牲可靠换低延迟",
+        "DNS 默认 UDP 超 512 字节切 TCP；音视频用 UDP（丢帧可接受、延迟不可接受）"
+      ]
+    }
+  ],
+  "previousDimensions": [],
+  "skippedDimensions": [],
+  "studentPerformance": {
+    "strengths": [
+      "主动要求调整学习顺序（先机制后背诵），学习方法合理",
+      "挥手复述中 TIME_WAIT 双原因全对，『防同四元组新连接收旧数据』表述精准",
+      "正确描述三次握手/四次挥手流程骨架，握手的第三个包能提到捎带数据",
+      "对 SYN Flood 攻击机制理解准确（半连接队列、等待重试的资源浪费），并能主动追问防御方案",
+      "对 ISN 同步与历史连接拦截提出疑问并认真追问到细节"
+    ],
+    "weaknesses": [
+      "复述未包含 seq/ack 具体数值（面试官爱追问）",
+      "未讲『为什么三次不是两次』的三个层次（全双工/ISN 同步/客户端拦截）",
+      "未提状态机（SYN_SENT/SYN_RCVD/FIN_WAIT/CLOSE_WAIT/LAST_ACK/TIME_WAIT）",
+      "未讲『为什么挥手四次 vs 握手三次』与『何时合并成三次』",
+      "SYN Cookie 的具体计算与代价此前不清楚"
+    ],
+    "overallGrade": "B+"
+  },
+  "relatedTopics": ["HTTP 协议演进（QUIC 对比）", "DNS", "WebSocket 心跳", "网络安全（SYN Flood）", "浏览器缓存"],
+  "nextSteps": [
+    "第三章：DNS 与浏览器缓存（解析链路、递归vs迭代、强缓存vs协商缓存、缓存策略设计）",
+    "复习时用自查清单闭卷自测，重点补 seq/ack 数值与状态机",
+    "面试答题模板：SYN Flood 按『原理→SYN Cookie→代价→分层防御』组织"
+  ]
+}

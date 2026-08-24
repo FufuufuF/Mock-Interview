@@ -1,0 +1,160 @@
+{
+  "date": "2026-08-11",
+  "topic": "React Hooks 底层机制",
+  "slug": "react-hooks-internals",
+  "dimensions": [
+    {
+      "id": 1,
+      "title": "Hook 存储结构（fiber.memoizedState 链表）",
+      "status": "completed",
+      "keyPoints": [
+        "Hook 节点结构：memoizedState / queue / next，组成单向链表挂在 fiber.memoizedState",
+        "Hook 没有名字只有位置：mount 新建节点，update 按顺序复用节点",
+        "条件调用：dev 报错（Rendered more/fewer hooks），生产静默串台",
+        "跳过中间 hook 会导致后面的全部错位一格（经典串台场景）",
+        "自定义 Hook 状态隔离：每个组件实例有独立 fiber",
+        "useState 存 state 值；useRef 存 {current}；useMemo 存 [值,deps]；useEffect 存 effect 对象"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "双 Dispatcher 机制",
+      "status": "completed",
+      "keyPoints": [
+        "ReactCurrentDispatcher.current 全局指针指向当前激活的 hook 实现",
+        "HooksDispatcherOnMount vs HooksDispatcherOnUpdate：mount/update 两套实现",
+        "切换时机：renderWithHooks 执行组件函数前，依据 current===null || memoizedState===null",
+        "useState 导出的是转发器：resolveDispatcher() → dispatcher.useState()",
+        "渲染后 current 重置为 ContextOnlyDispatcher（全抛错），组件外调用 hook 报 Invalid hook call",
+        "设计动机：API 干净、切换点集中、可注入（DevTools/测试）"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "useState 更新队列与环形链表",
+      "status": "completed",
+      "keyPoints": [
+        "setCount 是闭包：bind 了 fiber 和 queue，精确入队无需查找",
+        "update 对象：action / lane / next；queue.pending 永远指向最新节点",
+        "环形链表：pending.next 是最老节点，插入和取头尾都是 O(1)",
+        "dispatchSetState：创建 update → 插入环尾 → eager 优化 → scheduleUpdateOnFiber",
+        "updateReducer 遍历环消费：函数式 action 链式计算，值式 action 覆盖（同一快照）",
+        "值式更新在创建时固定数值，函数式把计算推迟到遍历队列时"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "setState 完整链路（入队→标记→调度→render→commit）",
+      "status": "completed",
+      "keyPoints": [
+        "setState = 入队（记账）→ lanes 冒泡到 root（报总部）→ 调度（决定时机）",
+        "fiber.lanes 位或合并，冒泡中每个祖先都标记；root.pendingLanes 是待办看板",
+        "ensureRootIsScheduled：已有任务同优先级直接 return（批处理核心），优先级变则取消重排",
+        "任务 = { performConcurrentWorkOnRoot, priority, expirationTime }，进 Scheduler 小顶堆",
+        "MessageChannel 宏任务触发：同步代码块结束后统一开工",
+        "render 阶段：bailout 跳过无关子树（lanes 路标），消费队列，时间切片，可中断",
+        "commit 阶段：切树 → 更新 DOM → 副作用 → 清 lanes，不可中断（避免脏状态）",
+        "SyncLane 走微任务 flush 不经堆；DefaultLane/TransitionLane 走堆 + MessageChannel"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "调度深层机制（标记vs任务/取消重排/两层调度）",
+      "status": "completed",
+      "keyPoints": [
+        "标记（lanes）只增不减直到被消费；任务（callbackNode）可取消重排",
+        "取消未执行的任务零损失，新任务优先级更高排更前 = 高优先级插队",
+        "执行中的任务被插队：中断 + 丢弃未完成 workInProgress，从头重来（最多丢 5ms）",
+        "删除重发 = 修改优先级的标准实现（小顶堆按 expirationTime 排序，改优先级需重排堆）",
+        "cancelCallback 是惰性删除（callback 置 null，弹出时跳过），O(1)",
+        "两层调度：浏览器事件循环只有一个 React 宏任务（取堆干活），堆内排序 React 自管",
+        "root 不知道哪个 hook 有更新：位或压扁信息，细节在各自 hook.queue"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "React 18 自动批处理与时间切片精确定位",
+      "status": "completed",
+      "keyPoints": [
+        "批处理 = 调度层任务去重，不是微任务机制（常见误解纠正）",
+        "React 17 vs 18：事件外（setTimeout/Promise）从同步多次渲染变为批处理",
+        "时间切片由 lane 决定：SyncLane 不切片，DefaultLane/TransitionLane 可切片",
+        "紧急与否由触发事件类型决定（typing/clicking/pressing），不由 setState 本身决定",
+        "setState vs startTransition：优先级、可无限推迟、Suspense 保留旧 UI",
+        "并发重放：低优先级 update 留 baseQueue，下次从 baseState 重放；函数式更新重放正确"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "useEffect 全流程",
+      "status": "completed",
+      "keyPoints": [
+        "两段式设计：调用 useEffect 只是登记（创建 effect 对象 + 入链表 + 打 Passive flag）",
+        "effect 对象：tag / create / destroy / deps / next；挂 hook.memoizedState 且链到 fiber.updateQueue",
+        "deps 只影响是否执行不影响是否登记：每次渲染都创建新 effect 对象",
+        "deps 没变也建新对象的原因：快照供下次比较 + 链表完整性（destroy 载体）+ 两段式一致性",
+        "deps 比较在 render 期完成，结果编码为 HookHasEffect 标记；commit 只看标记执行",
+        "commit 三子阶段：before mutation / mutation（layout destroy）/ layout（layout create）",
+        "useEffect：Scheduler 宏任务发布 flushPassiveEffects，paint 后异步执行",
+        "useLayoutEffect：不发布任务，commit 里同步执行（paint 前），可阻塞绘制",
+        "React render ≠ 浏览器渲染：render 阶段是 JS 执行，浏览器接管的是 paint",
+        "宏任务保证异步不保证绝对 paint 后；useEffect 语义定位非阻塞，精确时序用 useLayoutEffect"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "useMemo / useCallback / useRef",
+      "status": "completed",
+      "keyPoints": [
+        "useRef：mount 创建 {current}，update 返回同一对象；改 current 永不触发渲染（无入队无标记）",
+        "useMemo：存 [值,deps]，mount 立即执行计算（render 期，不能写副作用），deps 相同返回缓存",
+        "useCallback ≡ useMemo(() => fn, deps)，缓存函数引用配合 React.memo",
+        "三者都是同一套链表机制 + Object.is 浅比较，无特殊实现"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "误区纠正记录（11 条）",
+      "status": "completed",
+      "keyPoints": [
+        "rAF 在渲染步骤最前（paint 前），不是 DOM 更新后",
+        "批处理边界由调用场景的 lane 决定，不是按 React 版本一刀切",
+        "React 18 批处理是调度任务去重，微任务只用于 SyncLane flush",
+        "只有离散交互（click/keydown）是 SyncLane；setTimeout/Promise 是 DefaultLane",
+        "DefaultLane 的 setState 也会时间切片，不只有 transition",
+        "lanes 只增不减直到消费；可取消的只有任务",
+        "取消重排不延迟渲染（插队提前 / 中断重来最多丢 5ms）",
+        "React render 阶段是 JS 执行，浏览器渲染是 paint",
+        "deps 没变也必须创建新 effect 对象（快照/链条/标记）",
+        "useEffect 是宏任务发布的异步非阻塞副作用，不严格保证 paint 后",
+        "useMemo/useCallback 无特殊实现"
+      ]
+    }
+  ],
+  "previousDimensions": [],
+  "skippedDimensions": [],
+  "studentPerformance": {
+    "strengths": [
+      "对 setState 链路主动追问到调度器层面（标记vs任务、取消重排、两层调度）",
+      "能自己提出'删除重发 vs 改优先级'的设计等价性问题",
+      "正确推断 SyncLane/DefaultLane 的时间切片差异问题",
+      "对环形链表、批处理去重的机制性问题全部答对",
+      "学习节奏配合好：每轮确认后再推进"
+    ],
+    "weaknesses": [
+      "条件调用 hook 的报错机制与串台场景最初不清楚",
+      "误以为 React 18 用微任务实现批处理（受外部笔记影响）",
+      "误以为常规 setState 都是紧急同步（未区分离散事件与 DefaultLane）",
+      "误以为 setState 不开启时间切片",
+      "React render 阶段与浏览器渲染的术语混淆"
+    ],
+    "overallGrade": "A"
+  },
+  "relatedTopics": ["React Fiber", "事件循环", "Scheduler 调度器", "Concurrent Mode", "useTransition", "批处理"],
+  "nextSteps": [
+    "回到面试流程：AI Agent 模块题目（未完成）",
+    "React Fiber 双缓冲树与 workLoop 源码阅读",
+    "Scheduler 小顶堆与时间切片源码细节",
+    "将 AI Agent 八股文整理为 questions/frontend/ai-agent.md 题库"
+  ]
+}

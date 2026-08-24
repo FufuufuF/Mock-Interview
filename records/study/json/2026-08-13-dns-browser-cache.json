@@ -1,0 +1,82 @@
+{
+  "date": "2026-08-13",
+  "topic": "DNS 与浏览器缓存",
+  "slug": "dns-browser-cache",
+  "dimensions": [
+    {
+      "id": 1,
+      "title": "DNS 解析链路与递归/迭代",
+      "status": "completed",
+      "keyPoints": [
+        "六个检查点：浏览器缓存 → hosts/系统缓存 → 本地DNS → 根 → 顶级域 → 权威服务器",
+        "根/顶级域服务器只存下一级地址只负责指路，不存具体域名",
+        "客户端视角只发一个请求（给本地 DNS），后面 3 层由本地 DNS 代跑",
+        "递归 = 委托代办（客户端→本地DNS）；迭代 = 逐级指路（本地DNS→根/顶级/权威）",
+        "hosts 文件在操作系统层最高优先级",
+        "TTL 由权威服务器下发：小则变更快压力大，大则解析快故障转移慢"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "DNS 前端优化",
+      "status": "completed",
+      "keyPoints": [
+        "dns-prefetch 提前解析 IP（最廉价）；preconnect 建好 DNS+TCP+TLS（占用连接）",
+        "preload 当前页马上用（高优先级）；prefetch 未来用（低优先级空闲下载）",
+        "两组概念：preload/prefetch 是下载资源，dns-prefetch/preconnect 是准备连接",
+        "域名收敛减少 DNS 查询配合 HTTP/2；拆分 cookie-free domain 防 Cookie 携带"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "强缓存与协商缓存",
+      "status": "completed",
+      "keyPoints": [
+        "强缓存命中 → 200 (from cache) 不发请求；Expires 绝对时间（HTTP/1.0）vs Cache-Control max-age 相对时间（HTTP/1.1 引入，优先）",
+        "no-cache = 用前必须协商（可缓存副本）；no-store = 完全不缓存",
+        "public 中间层可缓存 / private 仅浏览器；immutable 配合 hash 跳过协商；s-maxage 给 CDN",
+        "协商缓存：客户端带 If-Modified-Since / If-None-Match 条件头，命中 304（无 body）",
+        "ETag 比 Last-Modified 优先更精确，但生成有开销且依赖服务器实现（nginx 默认不生成）",
+        "Last-Modified 秒级精度不够、内容没变时间变会误判，作兼容兜底",
+        "缓存位置优先级：Service Worker → Memory → Disk → 网络"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "缓存策略设计",
+      "status": "completed",
+      "keyPoints": [
+        "HTML no-cache（入口必须新鲜）；JS/CSS max-age 一年 + immutable + 文件名 hash",
+        "hash 变 = 文件名变 = 新缓存条目，老缓存自动作废",
+        "用 URL 变化代替缓存失效是整套设计的灵魂",
+        "CDN 场景：HTML 源站 no-cache 或 s-maxage 很短，静态资源长缓存"
+      ]
+    }
+  ],
+  "previousDimensions": [],
+  "skippedDimensions": [],
+  "studentPerformance": {
+    "strengths": [
+      "解析链路复述基本正确（缓存→系统→本地DNS→根→顶级→权威）",
+      "no-cache / no-store 区别答对（很多人答错）",
+      "Expires 绝对时间戳与时钟不准的缺点理解准确",
+      "ETag 优先、304 复用缓存的机制理解正确",
+      "主动提出六层链路的困惑（学习主动性）"
+    ],
+    "weaknesses": [
+      "把本地 DNS 服务器说成『本地 CDN』（术语混淆）",
+      "递归/迭代概念弄反：说本地 DNS 对上是递归（正确是迭代）",
+      "误以为 Cache-Control 是 HTTP/2.0 引入（正确是 HTTP/1.1，RFC 2616）",
+      "『老机器不支持 ETag』表述不准（是服务器/中间件实现问题 + 生成开销）",
+      "未提协商缓存的触发前提（If-Modified-Since / If-None-Match 条件头）",
+      "未覆盖 dns-prefetch 指令组、缓存位置、缓存策略设计三块"
+    ],
+    "overallGrade": "B"
+  },
+  "relatedTopics": ["HTTP 协议演进", "CDN", "前端性能优化", "同源策略与跨域", "网络安全"],
+  "nextSteps": [
+    "第四章：跨域与同源策略（CORS、预检请求、JSONP、跨域方案全家桶）",
+    "复习 DNS 部分重点补：递归/迭代的准确定义、六层链路作为『检查点』而非 6 次请求",
+    "复习缓存部分重点补：Cache-Control 版本归属、协商缓存条件头、200 from cache vs 304"
+  ]
+}
